@@ -19,15 +19,9 @@
 
   body {
     font-family: "Comic Sans MS", "Marker Felt", "PingFang SC", "Microsoft YaHei", cursive, sans-serif;
-    background: var(--paper);
+    background: #fff;
     color: var(--ink);
     min-height: 100vh;
-    background-image:
-      linear-gradient(var(--line) 1px, transparent 1px),
-      linear-gradient(90deg, var(--line) 1px, transparent 1px);
-    background-size: 40px 40px;
-    background-position: -1px -1px;
-    background-color: #fafafa;
   }
 
   /* 顶部状态栏 */
@@ -61,18 +55,27 @@
   .stat-icon { font-size: 16px; }
   .stat-value { font-weight: 700; }
 
-  .btn-reset {
+  /* 统一按钮基础样式 */
+  .btn-reset, .summon-btn, .tab, .filter-chip, .modal-close {
     background: var(--paper);
-    border: 2px dashed var(--line);
+    border: 2px solid var(--line);
     color: var(--ink);
-    padding: 6px 14px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 13px;
     font-family: inherit;
+    cursor: pointer;
     transition: background 0.15s;
   }
-  .btn-reset:hover { background: var(--light); }
+  .btn-reset:hover, .summon-btn:hover, .tab:hover, .filter-chip:hover, .modal-close:hover {
+    background: var(--light);
+  }
+  .btn-reset:active, .summon-btn:active, .tab:active, .filter-chip:active, .modal-close:active {
+    background: #e0e0e0;
+  }
+
+  .btn-reset {
+    padding: 7px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+  }
 
   /* 主区域 */
   .container {
@@ -137,23 +140,14 @@
   }
   .summon-btn {
     padding: 16px 36px;
-    border: 3px solid var(--line);
-    border-radius: 14px;
+    border-radius: 10px;
     font-size: 17px;
     font-weight: 700;
-    cursor: pointer;
-    color: var(--ink);
-    background: var(--paper);
-    font-family: inherit;
     position: relative;
-    transition: transform 0.1s, background 0.15s;
   }
-  .summon-btn:hover { transform: translate(-2px, -2px); box-shadow: 4px 4px 0 var(--line); }
-  .summon-btn:active { transform: translate(0, 0); box-shadow: none; }
-  .summon-btn:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; transform: none; }
+  .summon-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-  .btn-single { border-style: solid; }
-  .btn-ten { border-style: double; border-width: 5px; }
+  .btn-single, .btn-ten { border-width: 2px; }
   .summon-btn .cost {
     display: block;
     font-size: 11px;
@@ -179,20 +173,14 @@
   }
   .tab {
     padding: 8px 22px;
-    background: var(--paper);
-    border: 2px solid var(--line);
     border-radius: 10px;
-    cursor: pointer;
     font-size: 14px;
     color: var(--muted);
-    font-family: inherit;
-    transition: all 0.15s;
   }
   .tab.active {
     background: var(--ink);
     color: var(--paper);
   }
-  .tab:hover:not(.active) { background: var(--light); }
 
   /* 图鉴区 */
   .collection {
@@ -221,13 +209,9 @@
   }
   .filter-chip {
     padding: 5px 14px;
-    border-radius: 14px;
+    border-radius: 10px;
     font-size: 12px;
-    cursor: pointer;
-    background: var(--paper);
-    border: 2px solid var(--line);
     color: var(--muted);
-    font-family: inherit;
     font-weight: 600;
   }
   .filter-chip.active { background: var(--ink); color: var(--paper); }
@@ -390,18 +374,11 @@
   .modal-close {
     margin-top: 20px;
     padding: 10px 40px;
-    background: var(--ink);
-    border: 3px solid var(--line);
-    color: var(--paper);
     border-radius: 10px;
-    cursor: pointer;
     font-size: 15px;
     font-weight: 700;
-    font-family: inherit;
     align-self: center;
-    transition: transform 0.1s;
   }
-  .modal-close:hover { transform: translate(-1px, -1px); box-shadow: 3px 3px 0 var(--line); }
 
   /* 获得新卡提示 */
   .new-badge {
@@ -485,8 +462,8 @@
       <span class="stat-value" id="tickets">100</span>
     </div>
     <div class="stat-item">
-      <span class="stat-icon">💎</span>
-      <span>原石</span>
+      <span class="stat-icon">🪙</span>
+      <span>代币</span>
       <span class="stat-value" id="primogems">16000</span>
     </div>
     <button class="btn-reset" onclick="resetGame()">重置存档</button>
@@ -523,7 +500,7 @@
     </button>
     <button class="summon-btn" onclick="buyTickets()">
       购买抽卡券
-      <span class="cost">160 原石 = 1 张</span>
+      <span class="cost">160 代币 = 1 张</span>
     </button>
   </div>
 
@@ -776,7 +753,7 @@ function updateUI() {
 function buyTickets() {
   const cost = 160;
   if (state.primogems < cost) {
-    alert('原石不足！');
+    alert('代币不足！');
     return;
   }
   state.primogems -= cost;
