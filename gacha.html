@@ -5,25 +5,29 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>幻域抽卡 · Gacha Game</title>
 <style>
+  /* ============ 黑白简笔画风格 ============ */
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   :root {
-    --bg-dark: #0a0a1a;
-    --bg-mid: #14142b;
-    --accent: #6366f1;
-    --gold: #fbbf24;
-    --rainbow: linear-gradient(45deg, #ff0080, #ff8c00, #ffd700, #00ff88, #00bfff, #8a2be2, #ff0080);
+    --ink: #000;
+    --paper: #fff;
+    --line: #000;
+    --muted: #666;
+    --light: #f5f5f5;
+    --dash: 4px;
   }
 
   body {
-    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
-    background: var(--bg-dark);
-    color: #fff;
+    font-family: "Comic Sans MS", "Marker Felt", "PingFang SC", "Microsoft YaHei", cursive, sans-serif;
+    background: var(--paper);
+    color: var(--ink);
     min-height: 100vh;
-    overflow-x: hidden;
     background-image:
-      radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.15), transparent 40%),
-      radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.15), transparent 40%);
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 40px 40px;
+    background-position: -1px -1px;
+    background-color: #fafafa;
   }
 
   /* 顶部状态栏 */
@@ -31,10 +35,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 16px 24px;
-    background: rgba(20, 20, 43, 0.8);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding: 14px 24px;
+    background: var(--paper);
+    border-bottom: 3px solid var(--line);
     position: sticky;
     top: 0;
     z-index: 100;
@@ -42,37 +45,34 @@
   .logo {
     font-size: 22px;
     font-weight: 800;
-    background: var(--rainbow);
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: shine 3s linear infinite;
+    letter-spacing: 2px;
   }
-  @keyframes shine { to { background-position: 200% center; } }
+  .logo::before { content: "✎ "; }
 
-  .stats { display: flex; gap: 16px; align-items: center; }
+  .stats { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
   .stat-item {
-    display: flex; align-items: center; gap: 8px;
-    background: rgba(255,255,255,0.06);
-    padding: 8px 16px;
+    display: flex; align-items: center; gap: 6px;
+    border: 2px solid var(--line);
+    padding: 6px 14px;
     border-radius: 20px;
     font-size: 14px;
+    background: var(--paper);
   }
-  .stat-icon { font-size: 18px; }
-  .stat-value { font-weight: 700; color: var(--gold); }
+  .stat-icon { font-size: 16px; }
+  .stat-value { font-weight: 700; }
 
   .btn-reset {
-    background: transparent;
-    border: 1px solid rgba(255,255,255,0.2);
-    color: #aaa;
-    padding: 8px 14px;
+    background: var(--paper);
+    border: 2px dashed var(--line);
+    color: var(--ink);
+    padding: 6px 14px;
     border-radius: 8px;
     cursor: pointer;
     font-size: 13px;
-    transition: all 0.2s;
+    font-family: inherit;
+    transition: background 0.15s;
   }
-  .btn-reset:hover { background: rgba(255,255,255,0.1); color: #fff; }
+  .btn-reset:hover { background: var(--light); }
 
   /* 主区域 */
   .container {
@@ -83,17 +83,24 @@
 
   .hero {
     text-align: center;
-    padding: 40px 20px 20px;
+    padding: 30px 20px 10px;
   }
   .hero h1 {
-    font-size: 36px;
-    margin-bottom: 8px;
-    background: linear-gradient(135deg, #a78bfa, #60a5fa);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+    font-size: 34px;
+    margin-bottom: 6px;
+    font-weight: 800;
+    letter-spacing: 1px;
   }
-  .hero p { color: #8b8ba7; font-size: 15px; }
+  .hero h1::after {
+    content: "";
+    display: block;
+    width: 120px;
+    height: 3px;
+    background: var(--line);
+    margin: 10px auto 0;
+    border-radius: 2px;
+  }
+  .hero p { color: var(--muted); font-size: 15px; }
 
   /* 概率展示 */
   .rate-bar {
@@ -105,66 +112,63 @@
   }
   .rate-pill {
     padding: 6px 14px;
-    border-radius: 12px;
+    border: 2px solid var(--line);
+    border-radius: 14px;
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 700;
     display: flex;
     align-items: center;
     gap: 6px;
+    background: var(--paper);
   }
-  .rate-ur { background: linear-gradient(135deg, #ff0080, #8a2be2); }
-  .rate-ssr { background: linear-gradient(135deg, #f59e0b, #d97706); color: #1a1a1a; }
-  .rate-sr { background: linear-gradient(135deg, #a855f7, #7c3aed); }
-  .rate-r { background: linear-gradient(135deg, #3b82f6, #2563eb); }
-  .rate-n { background: linear-gradient(135deg, #6b7280, #4b5563); }
+  .rate-ur { border-style: double; border-width: 4px; }
+  .rate-ssr { border-width: 3px; }
+  .rate-sr { border-width: 2px; }
+  .rate-r { border-style: dashed; }
+  .rate-n { border-style: dotted; opacity: 0.7; }
 
   /* 抽卡按钮区 */
   .summon-area {
     display: flex;
     justify-content: center;
-    gap: 20px;
+    gap: 16px;
     margin: 30px 0;
     flex-wrap: wrap;
   }
   .summon-btn {
-    padding: 18px 40px;
-    border: none;
-    border-radius: 16px;
-    font-size: 18px;
+    padding: 16px 36px;
+    border: 3px solid var(--line);
+    border-radius: 14px;
+    font-size: 17px;
     font-weight: 700;
     cursor: pointer;
-    color: #fff;
+    color: var(--ink);
+    background: var(--paper);
+    font-family: inherit;
     position: relative;
-    overflow: hidden;
-    transition: transform 0.15s, box-shadow 0.15s;
+    transition: transform 0.1s, background 0.15s;
   }
-  .summon-btn:hover { transform: translateY(-2px); }
-  .summon-btn:active { transform: translateY(0); }
-  .summon-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .summon-btn:hover { transform: translate(-2px, -2px); box-shadow: 4px 4px 0 var(--line); }
+  .summon-btn:active { transform: translate(0, 0); box-shadow: none; }
+  .summon-btn:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; transform: none; }
 
-  .btn-single {
-    background: linear-gradient(135deg, #6366f1, #8b5cf6);
-    box-shadow: 0 8px 24px rgba(99,102,241,0.4);
-  }
-  .btn-ten {
-    background: linear-gradient(135deg, #f59e0b, #ef4444);
-    box-shadow: 0 8px 24px rgba(245,158,11,0.4);
-  }
+  .btn-single { border-style: solid; }
+  .btn-ten { border-style: double; border-width: 5px; }
   .summon-btn .cost {
     display: block;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 400;
-    opacity: 0.85;
+    color: var(--muted);
     margin-top: 4px;
   }
 
   .guarantee-info {
     text-align: center;
-    color: #8b8ba7;
+    color: var(--muted);
     font-size: 13px;
     margin-bottom: 20px;
   }
-  .guarantee-info span { color: var(--gold); font-weight: 600; }
+  .guarantee-info span { font-weight: 700; color: var(--ink); text-decoration: underline; }
 
   /* 标签页 */
   .tabs {
@@ -174,37 +178,40 @@
     margin-bottom: 20px;
   }
   .tab {
-    padding: 10px 24px;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
+    padding: 8px 22px;
+    background: var(--paper);
+    border: 2px solid var(--line);
     border-radius: 10px;
     cursor: pointer;
     font-size: 14px;
-    color: #aaa;
-    transition: all 0.2s;
+    color: var(--muted);
+    font-family: inherit;
+    transition: all 0.15s;
   }
   .tab.active {
-    background: var(--accent);
-    color: #fff;
-    border-color: var(--accent);
+    background: var(--ink);
+    color: var(--paper);
   }
+  .tab:hover:not(.active) { background: var(--light); }
 
   /* 图鉴区 */
   .collection {
-    background: rgba(20,20,43,0.6);
+    background: var(--paper);
+    border: 3px solid var(--line);
     border-radius: 16px;
-    padding: 24px;
-    border: 1px solid rgba(255,255,255,0.08);
+    padding: 22px;
   }
   .collection-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px dashed var(--line);
   }
   .collection-header h2 { font-size: 18px; }
-  .collection-count { color: #8b8ba7; font-size: 13px; }
-  .collection-count b { color: var(--gold); }
+  .collection-count { color: var(--muted); font-size: 13px; }
+  .collection-count b { color: var(--ink); font-weight: 700; }
 
   .filter-bar {
     display: flex;
@@ -217,11 +224,13 @@
     border-radius: 14px;
     font-size: 12px;
     cursor: pointer;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1);
-    color: #aaa;
+    background: var(--paper);
+    border: 2px solid var(--line);
+    color: var(--muted);
+    font-family: inherit;
+    font-weight: 600;
   }
-  .filter-chip.active { background: rgba(255,255,255,0.15); color: #fff; }
+  .filter-chip.active { background: var(--ink); color: var(--paper); }
 
   .card-grid {
     display: grid;
@@ -238,23 +247,24 @@
     padding: 8px;
     position: relative;
     overflow: hidden;
-    border: 2px solid;
-    transition: transform 0.2s;
+    border: 2px solid var(--line);
+    background: var(--paper);
+    transition: transform 0.15s;
     cursor: pointer;
   }
-  .mini-card:hover { transform: scale(1.05); }
+  .mini-card:hover { transform: translate(-1px, -1px); box-shadow: 3px 3px 0 var(--line); }
   .mini-card.locked {
-    filter: grayscale(1) brightness(0.3);
-    border-color: rgba(255,255,255,0.1);
+    opacity: 0.35;
+    border-style: dashed;
   }
-  .mini-card .icon { font-size: 32px; margin-bottom: 6px; }
-  .mini-card .name { font-size: 12px; font-weight: 600; text-align: center; }
+  .mini-card .icon { font-size: 30px; margin-bottom: 6px; filter: grayscale(1); }
+  .mini-card .name { font-size: 12px; font-weight: 700; text-align: center; }
   .mini-card .count-badge {
     position: absolute;
     top: 4px;
     right: 4px;
-    background: rgba(0,0,0,0.6);
-    color: var(--gold);
+    background: var(--ink);
+    color: var(--paper);
     font-size: 10px;
     padding: 2px 6px;
     border-radius: 8px;
@@ -266,13 +276,19 @@
     font-size: 10px;
     letter-spacing: 1px;
   }
+  /* 稀有度用边框样式区分 */
+  .mini-card.rarity-ur { border: 4px double var(--line); }
+  .mini-card.rarity-ssr { border: 3px solid var(--line); }
+  .mini-card.rarity-sr { border: 2px solid var(--line); }
+  .mini-card.rarity-r { border: 2px dashed var(--line); }
+  .mini-card.rarity-n { border: 1px dotted var(--line); }
 
   /* 抽卡结果弹窗 */
   .modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.85);
-    backdrop-filter: blur(8px);
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(4px);
     display: none;
     align-items: center;
     justify-content: center;
@@ -283,13 +299,13 @@
 
   .results-container {
     display: grid;
-    gap: 16px;
+    gap: 14px;
     width: 100%;
     max-width: 900px;
   }
   .results-container.single {
     grid-template-columns: 1fr;
-    max-width: 280px;
+    max-width: 260px;
   }
   .results-container.ten {
     grid-template-columns: repeat(5, 1fr);
@@ -300,7 +316,7 @@
 
   .result-card {
     aspect-ratio: 3/4;
-    border-radius: 14px;
+    border-radius: 12px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -308,17 +324,18 @@
     padding: 12px;
     position: relative;
     overflow: hidden;
-    border: 3px solid;
+    border: 3px solid var(--line);
+    background: var(--paper);
     transform: scale(0) rotateY(180deg);
-    animation: cardReveal 0.6s forwards;
+    animation: cardReveal 0.5s forwards;
   }
   @keyframes cardReveal {
     0% { transform: scale(0) rotateY(180deg); }
-    60% { transform: scale(1.1) rotateY(0); }
+    60% { transform: scale(1.08) rotateY(0); }
     100% { transform: scale(1) rotateY(0); }
   }
-  .result-card .icon { font-size: 48px; margin-bottom: 8px; }
-  .result-card .name { font-size: 14px; font-weight: 700; text-align: center; }
+  .result-card .icon { font-size: 46px; margin-bottom: 8px; filter: grayscale(1); }
+  .result-card .name { font-size: 13px; font-weight: 700; text-align: center; }
   .result-card .stars { font-size: 12px; margin-top: 4px; }
   .result-card .rarity-label {
     position: absolute;
@@ -328,31 +345,24 @@
     font-weight: 800;
     padding: 2px 8px;
     border-radius: 6px;
-    background: rgba(0,0,0,0.5);
+    border: 1px solid var(--line);
+    background: var(--paper);
   }
 
-  .result-card.ur {
-    background: var(--rainbow);
-    background-size: 300% 300%;
-    animation: cardReveal 0.6s forwards, rainbowMove 3s linear infinite;
-    box-shadow: 0 0 40px rgba(255,0,128,0.6);
-  }
-  @keyframes rainbowMove {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-  }
-  .result-card.ssr { background: linear-gradient(135deg, #fbbf24, #f59e0b); box-shadow: 0 0 30px rgba(251,191,36,0.5); color: #1a1a1a; }
-  .result-card.sr { background: linear-gradient(135deg, #c084fc, #a855f7); }
-  .result-card.r { background: linear-gradient(135deg, #60a5fa, #3b82f6); }
-  .result-card.n { background: linear-gradient(135deg, #9ca3af, #6b7280); }
+  /* 稀有度用边框/背景区分 */
+  .result-card.ur { border: 5px double var(--line); background: var(--light); }
+  .result-card.ssr { border: 4px solid var(--line); }
+  .result-card.sr { border: 3px solid var(--line); }
+  .result-card.r { border: 2px dashed var(--line); }
+  .result-card.n { border: 1px dotted var(--line); opacity: 0.8; }
 
   /* 单抽大卡特殊样式 */
-  .results-container.single .result-card { padding: 24px; }
-  .results-container.single .result-card .icon { font-size: 80px; }
-  .results-container.single .result-card .name { font-size: 20px; }
-  .results-container.single .result-card .stars { font-size: 16px; }
+  .results-container.single .result-card { padding: 22px; }
+  .results-container.single .result-card .icon { font-size: 76px; }
+  .results-container.single .result-card .name { font-size: 18px; }
+  .results-container.single .result-card .stars { font-size: 15px; }
 
-  /* 抽卡光束动画 */
+  /* 抽卡光束动画 - 黑白版本 */
   .beam {
     position: fixed;
     inset: 0;
@@ -368,9 +378,9 @@
     transform: translate(-50%, -50%);
     width: 10px; height: 10px;
     border-radius: 50%;
-    background: #fff;
-    box-shadow: 0 0 60px 40px rgba(255,255,255,0.8);
-    animation: beamExpand 0.8s ease-out;
+    background: var(--ink);
+    box-shadow: 0 0 50px 30px rgba(0,0,0,0.5);
+    animation: beamExpand 0.7s ease-out;
   }
   @keyframes beamExpand {
     0% { transform: translate(-50%,-50%) scale(0); opacity: 1; }
@@ -379,34 +389,50 @@
 
   .modal-close {
     margin-top: 20px;
-    padding: 12px 40px;
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.2);
-    color: #fff;
+    padding: 10px 40px;
+    background: var(--ink);
+    border: 3px solid var(--line);
+    color: var(--paper);
     border-radius: 10px;
     cursor: pointer;
     font-size: 15px;
-    font-weight: 600;
+    font-weight: 700;
+    font-family: inherit;
     align-self: center;
-    transition: background 0.2s;
+    transition: transform 0.1s;
   }
-  .modal-close:hover { background: rgba(255,255,255,0.2); }
+  .modal-close:hover { transform: translate(-1px, -1px); box-shadow: 3px 3px 0 var(--line); }
 
-  /* 稀有度颜色 */
-  .rarity-ur { border-color: #ff0080; }
-  .rarity-ssr { border-color: #fbbf24; }
-  .rarity-sr { border-color: #a855f7; }
-  .rarity-r { border-color: #3b82f6; }
-  .rarity-n { border-color: #6b7280; }
+  /* 获得新卡提示 */
+  .new-badge {
+    position: absolute;
+    top: -4px; right: -4px;
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 8px;
+    z-index: 10;
+    border: 1px solid var(--line);
+  }
+
+  /* 模态框内容布局 */
+  .modal-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
 
   /* 历史记录 */
   .history {
-    background: rgba(20,20,43,0.6);
+    background: var(--paper);
+    border: 3px solid var(--line);
     border-radius: 16px;
-    padding: 24px;
-    border: 1px solid rgba(255,255,255,0.08);
+    padding: 22px;
   }
-  .history h2 { font-size: 18px; margin-bottom: 16px; }
+  .history h2 { font-size: 18px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px dashed var(--line); }
   .history-list {
     max-height: 400px;
     overflow-y: auto;
@@ -419,81 +445,39 @@
     align-items: center;
     gap: 12px;
     padding: 10px 14px;
-    background: rgba(255,255,255,0.04);
-    border-radius: 10px;
-    border-left: 3px solid;
+    background: var(--paper);
+    border-radius: 8px;
+    border: 2px solid var(--line);
+    border-left-width: 6px;
   }
-  .history-item .h-icon { font-size: 24px; }
+  .history-item .h-icon { font-size: 22px; filter: grayscale(1); }
   .history-item .h-name { flex: 1; font-size: 14px; font-weight: 600; }
-  .history-item .h-time { color: #8b8ba7; font-size: 12px; }
-  .history-item .h-rarity { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 6px; }
+  .history-item .h-time { color: var(--muted); font-size: 12px; }
+  .history-item .h-rarity {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 6px;
+    border: 1px solid var(--line);
+  }
 
   .empty-state {
     text-align: center;
-    color: #8b8ba7;
+    color: var(--muted);
     padding: 40px 20px;
     font-size: 14px;
   }
 
-  /* 闪光特效 */
-  .sparkle {
-    position: absolute;
-    width: 4px; height: 4px;
-    background: #fff;
-    border-radius: 50%;
-    pointer-events: none;
-    animation: sparkle 1.5s linear infinite;
-  }
-  @keyframes sparkle {
-    0%, 100% { opacity: 0; transform: scale(0); }
-    50% { opacity: 1; transform: scale(1); }
-  }
-
-  /* 获得新卡提示 */
-  .new-badge {
-    position: absolute;
-    top: -4px; right: -4px;
-    background: #ef4444;
-    color: #fff;
-    font-size: 10px;
-    font-weight: 700;
-    padding: 2px 6px;
-    border-radius: 8px;
-    z-index: 10;
-  }
-
-  /* 模态框内容布局 */
-  .modal-inner {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-  }
-
-  /* 浮动粒子背景 */
-  .particle {
-    position: fixed;
-    width: 3px; height: 3px;
-    background: rgba(167,139,250,0.5);
-    border-radius: 50%;
-    pointer-events: none;
-    animation: float linear infinite;
-  }
-  @keyframes float {
-    from { transform: translateY(100vh); }
-    to { transform: translateY(-10px); }
-  }
-
-  /* 滚动条美化 */
-  ::-webkit-scrollbar { width: 8px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
+  /* 滚动条 */
+  ::-webkit-scrollbar { width: 10px; }
+  ::-webkit-scrollbar-track { background: var(--light); }
+  ::-webkit-scrollbar-thumb { background: var(--line); border-radius: 5px; border: 2px solid var(--light); }
 </style>
 </head>
 <body>
 
 <div class="topbar">
-  <div class="logo">✦ 幻域抽卡 ✦</div>
+  <div class="logo">幻域抽卡</div>
   <div class="stats">
     <div class="stat-item">
       <span class="stat-icon">🎫</span>
@@ -524,7 +508,7 @@
   </div>
 
   <div class="guarantee-info">
-    💫 十连必出 <span>SR</span> 及以上 · 每 <span id="pity-count">80</span> 抽保底 <span>UR</span>
+    十连必出 <span>SR</span> 及以上 · 每 <span id="pity-count">80</span> 抽保底 <span>UR</span>
     （当前已累计 <span id="current-pity">0</span> 抽未出 UR）
   </div>
 
@@ -537,7 +521,7 @@
       十连抽
       <span class="cost">消耗 10 张抽卡券 · 保底 SR+</span>
     </button>
-    <button class="summon-btn" style="background:linear-gradient(135deg,#10b981,#059669);box-shadow:0 8px 24px rgba(16,185,129,0.4);" onclick="buyTickets()">
+    <button class="summon-btn" onclick="buyTickets()">
       购买抽卡券
       <span class="cost">160 原石 = 1 张</span>
     </button>
@@ -653,11 +637,11 @@ const CARDS = {
 };
 
 const RARITY_CONFIG = {
-  ur:  { stars: '★★★★★★', label: 'UR',  color: '#ff0080' },
-  ssr: { stars: '★★★★★',  label: 'SSR', color: '#fbbf24' },
-  sr:  { stars: '★★★★',   label: 'SR',  color: '#a855f7' },
-  r:   { stars: '★★★',    label: 'R',   color: '#3b82f6' },
-  n:   { stars: '★★',     label: 'N',   color: '#6b7280' },
+  ur:  { stars: '★★★★★★', label: 'UR' },
+  ssr: { stars: '★★★★★',  label: 'SSR' },
+  sr:  { stars: '★★★★',   label: 'SR' },
+  r:   { stars: '★★★',    label: 'R' },
+  n:   { stars: '★★',     label: 'N' },
 };
 
 // 为每张卡添加稀有度字段
@@ -673,9 +657,9 @@ function defaultState() {
   return {
     tickets: 100,
     primogems: 16000,
-    collection: {}, // { "ur_0": count }
-    pity: 0,        // 距离上次 UR 的抽数
-    history: [],    // 抽卡历史
+    collection: {},
+    pity: 0,
+    history: [],
     totalPulls: 0,
   };
 }
@@ -704,10 +688,9 @@ function resetGame() {
 
 // ============ 抽卡逻辑 ============
 const RATES = { ur: 0.01, ssr: 0.06, sr: 0.13, r: 0.30, n: 0.50 };
-const PITY_THRESHOLD = 80; // 80 抽保底 UR
+const PITY_THRESHOLD = 80;
 
 function rollRarity(forceSrPlus = false) {
-  // 保底：达到 80 抽必出 UR
   if (state.pity >= PITY_THRESHOLD - 1) return 'ur';
 
   const r = Math.random();
@@ -715,7 +698,6 @@ function rollRarity(forceSrPlus = false) {
   for (const [rarity, rate] of Object.entries(RATES)) {
     cumulative += rate;
     if (r < cumulative) {
-      // 十连保底：如果是 N/R 且需要 SR+，强制给 SR
       if (forceSrPlus && (rarity === 'n' || rarity === 'r')) {
         return Math.random() < 0.6 ? 'sr' : (Math.random() < 0.7 ? 'ssr' : 'ur');
       }
@@ -751,7 +733,6 @@ function summon(count) {
   let hasSrPlus = false;
 
   for (let i = 0; i < count; i++) {
-    // 十连最后一抽保底 SR+
     const forceSr = (count === 10 && i === count - 1 && !hasSrPlus);
     const rarity = rollRarity(forceSr);
     const card = pickCard(rarity);
@@ -771,7 +752,6 @@ function summon(count) {
 
     results.push({ card, rarity, isNew });
 
-    // 记录历史（最多保留 100 条）
     state.history.unshift({
       name: card.name,
       icon: card.icon,
@@ -811,16 +791,13 @@ function showResults(results, count) {
   const modal = document.getElementById('result-modal');
   const container = document.getElementById('results-container');
 
-  // 检查最高稀有度决定光效颜色
   const hasUr = results.some(r => r.rarity === 'ur');
   const hasSsr = results.some(r => r.rarity === 'ssr');
 
   beam.style.display = 'block';
   beam.classList.add('show');
-  if (hasUr) {
-    beam.style.background = 'radial-gradient(circle, rgba(255,0,128,0.3), transparent 70%)';
-  } else if (hasSsr) {
-    beam.style.background = 'radial-gradient(circle, rgba(251,191,36,0.3), transparent 70%)';
+  if (hasUr || hasSsr) {
+    beam.style.background = 'radial-gradient(circle, rgba(0,0,0,0.15), transparent 70%)';
   } else {
     beam.style.background = 'transparent';
   }
@@ -840,16 +817,16 @@ function showResults(results, count) {
       div.style.animationDelay = (idx * 0.1) + 's';
       div.innerHTML = `
         ${r.isNew ? '<span class="new-badge">NEW</span>' : ''}
-        <span class="rarity-label" style="color:${cfg.color}">${cfg.label}</span>
+        <span class="rarity-label">${cfg.label}</span>
         <div class="icon">${card.icon}</div>
         <div class="name">${card.name}</div>
-        <div class="stars" style="color:${cfg.color}">${cfg.stars}</div>
+        <div class="stars">${cfg.stars}</div>
       `;
       container.appendChild(div);
     });
 
     modal.classList.add('show');
-  }, 700);
+  }, 650);
 }
 
 function closeModal() {
@@ -881,15 +858,12 @@ function renderCollection() {
       const cfg = RARITY_CONFIG[rarity];
       const div = document.createElement('div');
       div.className = `mini-card rarity-${rarity} ${owned === 0 ? 'locked' : ''}`;
-      div.style.background = owned > 0
-        ? `linear-gradient(135deg, ${cfg.color}33, ${cfg.color}11)`
-        : 'rgba(255,255,255,0.02)';
       div.title = card.desc;
       div.innerHTML = `
-        <div class="icon">${owned > 0 ? card.icon : '❓'}</div>
+        <div class="icon">${owned > 0 ? card.icon : '？'}</div>
         <div class="name">${owned > 0 ? card.name : '???'}</div>
         ${owned > 1 ? `<span class="count-badge">×${owned}</span>` : ''}
-        <div class="rarity-stars" style="color:${cfg.color}">${cfg.stars}</div>
+        <div class="rarity-stars">${cfg.stars}</div>
       `;
       grid.appendChild(div);
     });
@@ -909,10 +883,10 @@ function renderHistory() {
   list.innerHTML = state.history.map(h => {
     const cfg = RARITY_CONFIG[h.rarity];
     return `
-      <div class="history-item" style="border-left-color:${cfg.color}">
+      <div class="history-item">
         <span class="h-icon">${h.icon}</span>
         <span class="h-name">${h.name}</span>
-        <span class="h-rarity" style="background:${cfg.color}33;color:${cfg.color}">${cfg.label}</span>
+        <span class="h-rarity">${cfg.label}</span>
         <span class="h-time">${h.time}</span>
       </div>
     `;
@@ -940,24 +914,10 @@ document.querySelectorAll('.filter-chip').forEach(chip => {
   });
 });
 
-// ============ 背景粒子 ============
-function createParticles() {
-  for (let i = 0; i < 30; i++) {
-    const p = document.createElement('div');
-    p.className = 'particle';
-    p.style.left = Math.random() * 100 + '%';
-    p.style.animationDuration = (8 + Math.random() * 12) + 's';
-    p.style.animationDelay = Math.random() * 10 + 's';
-    p.style.opacity = 0.3 + Math.random() * 0.5;
-    document.body.appendChild(p);
-  }
-}
-
 // ============ 初始化 ============
 updateUI();
 renderCollection();
 renderHistory();
-createParticles();
 
 // 点击弹窗外部关闭
 document.getElementById('result-modal').addEventListener('click', (e) => {
